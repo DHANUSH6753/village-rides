@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RideShare - Login</title>
+    <style>* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+}
+
+nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+nav a.active {
+    color: #000;
+    font-weight: 700;
+}
+
+.auth-buttons button {
+    margin-left: 10px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-login {
+    background: transparent;
+    border: 1px solid #000;
+}
+
+.btn-signup {
+    background: #000;
+    color: #fff;
+    border: none;
+}
+
+.hero {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 40px;
+}
+
+.login-container, .password-recovery-container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h2, .password-recovery-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.form-footer {
+    font-size: 14px;
+    color: #666;
+}
+
+.form-footer a {
+    color: #000;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.form-footer span {
+    margin: 0 10px;
+}
+
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #4CAF50;
+    color: white;
+    border-radius: 4px;
+    display: none;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+    }
+    
+    nav {
+        margin: 20px 0;
+    }
+    
+    .hero h1 {
+        font-size: 32px;
+    }
+}</style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">RideShare</div>
+            <nav>
+                <a href="#" class="active">Drive</a>
+                <a href="#">Ride</a>
+                <a href="#">Business</a>
+                <a href="#">More</a>
+            </nav>
+            <div class="auth-buttons">
+                <button id="loginBtn" class="btn-login">Log in</button>
+                <button class="btn-signup">Sign up</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="hero">
+                <h1>Get there. Your day belongs to you.</h1>
+                <div class="login-container" id="loginContainer">
+                    <h2>Log in to ride or drive</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <input type="email" id="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn-submit">Log in</button>
+                        <div class="form-footer">
+                            <a href="#" id="forgotPassword">Forgot password?</a>
+                            <span>or</span>
+                            <a href="#" id="signUpLink">Sign up to ride or drive</a>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="password-recovery-container" id="passwordRecoveryContainer" style="display: none;">
+                    <h2>Reset your password</h2>
+                    <form id="passwordRecoveryForm">
+                        <div class="form-group">
+                            <input type="email" id="recoveryEmail" placeholder="Enter your email" required>
+                        </div>
+                        <button type="submit" class="btn-submit">Send reset link</button>
+                        <div class="form-footer">
+                            <a href="#" id="backToLogin">Back to login</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script >document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const passwordRecoveryForm = document.getElementById('passwordRecoveryForm');
+    const forgotPasswordLink = document.getElementById('forgotPassword');
+    const backToLoginLink = document.getElementById('backToLogin');
+    const loginContainer = document.getElementById('loginContainer');
+    const passwordRecoveryContainer = document.getElementById('passwordRecoveryContainer');
+    const notification = document.getElementById('notification');
+
+    // Mock user data for demonstration
+    const mockUsers = [
+        { email: 'user@example.com', password: 'password123' }
+    ];
+
+    // Toggle between login and password recovery forms
+    forgotPasswordLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        loginContainer.style.display = 'none';
+        passwordRecoveryContainer.style.display = 'block';
+    });
+
+    backToLoginLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        passwordRecoveryContainer.style.display = 'none';
+        loginContainer.style.display = 'block';
+    });
+
+    // Handle login form submission
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        // Check if user exists (in a real app, this would be an API call)
+        const user = mockUsers.find(u => u.email === email && u.password === password);
+        
+        if (user) {
+            showNotification('Login successful! Redirecting...');
+            // In a real app, you would redirect or update the UI
+            setTimeout(() => {
+                window.location.href = 'dashboard.html'; // This page doesn't exist in this example
+            }, 1500);
+        } else {
+            showNotification('Invalid email or password', 'error');
+        }
+    });
+
+    // Handle password recovery form submission
+    passwordRecoveryForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('recoveryEmail').value;
+        
+        // Check if email exists (in a real app, this would be an API call)
+        const userExists = mockUsers.some(u => u.email === email);
+        
+        if (userExists) {
+            showNotification('Password reset link sent to your email');
+            // Reset form and go back to login
+            passwordRecoveryForm.reset();
+            passwordRecoveryContainer.style.display = 'none';
+            loginContainer.style.display = 'block';
+        } else {
+            showNotification('No account found with that email', 'error');
+        }
+    });
+
+    // Helper function to show notifications
+    function showNotification(message, type = 'success') {
+        notification.textContent = message;
+        notification.style.display = 'block';
+        notification.style.backgroundColor = type === 'success' ? '#4CAF50' : '#f44336';
+        
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 3000);
+    }
+});</script>
+</body>
+</html>
